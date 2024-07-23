@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaterSplatting: Fast Underwater 3D Scene Reconstruction using Gaussian Splatting</title>
+    <meta name="description" content="WaterSplatting paper. Official web with qualitative comparisons, links to the source code, and additional materials.">
+    <meta name="keywords" content="watersplatting,3dgs,nerf,official,code" />
+    <meta name="author" content="Jonas Kulhanek" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <h1>
+        <span class="title-main"><span>WaterSplatting</span></span>
+        <span class="title-small">Fast Underwater 3D Scene Reconstruction Using Gaussian Splatting</span>
+      </h1>
+    </header>
+    <div class="authors">
+       <div class="author">
+        <span class="author-name">Huapeng Li</span>
+        <span class="author-affiliation">University of Zurich</span>
+      </div>
+       <div class="author">
+        <span class="author-name">Wenxuan Song
+        </span>
+        <span class="author-affiliation">ETH Zurich</span>
+      </div>
+       <div class="author">
+        <span class="author-name">Tianao Xu</span>
+        <span class="author-affiliation">ETH Zurich</span>
+      </div>
+       <div class="author">
+        <span class="author-name">Alexandre Elsig</span>
+        <span class="author-affiliation">ETH Zurich</span>
+      </div>
+      <div class="author">
+        <span class="author-name"><a href="https://jkulhanek.com">Jonas Kulhanek</a></span>
+        <span class="author-affiliation">CTU in Prague,<br> ETH Zurich</span>
+      </div>
+    </div>
+    <div class="links">
+      <a class="button" href="/paper.pdf"><i class="ti ti-file-type-pdf"></i> Paper</a>
+      <a class="button" href="https://arxiv.org/abs/2408.08206"><img style="height:80%;margin-right:0.2em;filter: brightness(0) saturate(100%) invert(100%)" src="/assets/arxiv.svg"> arXiv</a>
+      <!--<a class="button" href=""><i class="ti ti-brand-github-filled"></i> Code</a>-->
+    </div>
+    <style>
+      .video.teaser-video::before {
+        padding-bottom: 50%;
+      }
+    </style>
+    <video class="video" style="aspect-ratio: 1920/1080" loop muted autoplay>
+      <source src="/assets/curasao.webm" type="video/webm">
+      <source src="/assets/curasao.mp4" type="video/mp4">
+    </video>
+    <p class="justify" style="font-size: 1rem;margin: 0 0 0.4rem 0; text-align-last: center">
+    <strong>WaterSplatting</strong> combines 3DGS with volume rendering to enable water/fog modeling</strong>
+    </p>
+
+    <section class="abstract">
+      <h2>Abstract</h2>
+      <p>
+We introduce WaterSplatting, a novel approach that fuses volumetric rendering with 3DGS to handle underwater data effectively. 
+Our method employs 3DGS for explicit geometry representation and a separate volumetric field (queried once per pixel) for capturing the scattering medium. 
+This dual representation further allows the restoration of the scenes by removing the scattering medium. 
+Our method outperforms state-of-the-art NeRF-based methods in rendering quality on the underwater SeaThru-NeRF dataset. 
+Furthermore, it does so while offering real-time rendering performance.
+      </p>
+
+<figure style="margin: 0">
+    <picture>
+      <source srcset="/assets/overview.webp, /assets/overview@2x.webp 2x" type="image/webp" />
+      <source srcset="/assets/overview.png, /assets/overview@2x.png 2x" type="image/png" />
+      <img src="/assets/overview.png" alt="WaterSplatting overview" style="width: 100%; margin: 1em auto 0.3em auto; display: block;" />
+    </picture>
+      <figcaption style="text-align: justify">
+      We start rendering by casting a ray per pixel and collect the patch-intersected Gaussians along the ray
+      and their color given ray direction. Then, we walk through the list of sorted Gaussians per pixel, query their opacity and depth, based on
+      which we acquire the transmittance of both Gaussians and medium, rendering the Gaussians and the segments between adjacent two to
+      obtain the Medium component and the Object component.
+      </figcaption>
+    </figure>
+    </section>
+    <section>
+      <h2>Results</h2>
+      <figure>
+        <div class="video-wrapper">
+          <video class="video-compare" style="aspect-ratio: 1280/720" loop muted>
+            <source src="/assets/panama-seathru-ws.webm" type="video/webm">
+            <source src="/assets/panama-seathru-ws.mp4" type="video/mp4">
+          </video>
+          <span class="video-label video-label-with-fps">
+            <span>SeaThru-NeRF<div class="video-fps">FPS: 0.38</div></span>
+            <span>WaterSplatting<div class="video-fps">FPS: 27.4</div></span>
+          </span>
+        </div>
+        <figcaption>
+          <strong>Panama - comparison with SeaThru-NeRF</strong> <strong>Left:</strong>SeaThru-NeRF<strong> Right:</strong> WaterSplatting.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="video-wrapper">
+          <video class="video-compare" style="aspect-ratio: 1280/720" loop muted>
+            <source src="/assets/japan-seathru-ws.webm" type="video/webm">
+            <source src="/assets/japan-seathru-ws.mp4" type="video/mp4">
+          </video>
+          <span class="video-label video-label-with-fps">
+            <span>SeaThru-NeRF<div class="video-fps">FPS: 0.63</div></span>
+            <span>WaterSplatting<div class="video-fps">FPS: 59.4</div></span>
+          </span>
+        </div>
+        <figcaption>
+          <strong>Japanese Gradens - comparison with SeaThru-NeRF</strong> <strong>Left:</strong>SeaThru-NeRF<strong> Right:</strong> WaterSplatting.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="video-wrapper">
+          <video class="video-compare" style="aspect-ratio: 1280/720" loop muted>
+            <source src="/assets/iui3-obj.webm" type="video/webm">
+            <source src="/assets/iui3-obj.mp4" type="video/mp4">
+          </video>
+          <span class="video-label">
+            <span>WaterSplatting</span>
+            <span>removed medium</span>
+          </span>
+        </div>
+        <figcaption>
+          <strong>IUI3 - w/o medium.</strong> <strong>Left:</strong>WaterSplatting reconstruction. <strong>Right:</strong> WaterSplatting with medium removed.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="video-wrapper">
+          <video class="video-compare" style="aspect-ratio: 1280/720" loop muted>
+            <source src="/assets/curasao-obj.webm" type="video/webm">
+            <source src="/assets/curasao-obj.mp4" type="video/mp4">
+          </video>
+          <span class="video-label">
+            <span>WaterSplatting</span>
+            <span>removed medium</span>
+          </span>
+          <strong>Curasao - w/o medium.</strong> <strong>Left:</strong>WaterSplatting reconstruction. <strong>Right:</strong> WaterSplatting with medium removed.
+          </span>
+        </div>
+      </figure>
+    </section>
+    <section>
+      <h2>Acknowledgements</h2>
+      <p class="justify">
+        This work was supported by the Czech Science Foundation (GAČR) EXPRO (grant no. 23-07973X), and by the Ministry of Education, Youth and Sports of the Czech Republic through the e-INFRA CZ (ID:90254).
+        Jonas Kulhanek acknowledges travel support from the European Union’s Horizon 2020 research and innovation programme under ELISE (grant no. 951847).
+        The renderer is built on 3DGS, Mip-Splatting. Please follow the license of 3DGS and Mip-Splatting. 
+        We thank all the authors for their great work and repos. Finally, we would also like to thank 
+        Dor Verbin for the video comparison tool used in this website.
+      </p>
+    </section>
+    <section class="citation">
+      <h2>Citation</h2>
+      <span>Please use the following citation:</span>
+      <pre><code>@article{li2024watersplatting,
+  title={{W}ater{S}platting: Fast Underwater {3D} Scene Reconstruction using Gaussian Splatting},
+  author={Li, Huapeng and Song, Wenxuan and Xu, Tianao and Elsig, Alexandre and Kulhanek, Jonas},
+  journal={arXiv},
+  year={2024}
+}</code></pre>
+    </section>
+    <script src="/scripts.js"></script>
+  </body>
+</html>
